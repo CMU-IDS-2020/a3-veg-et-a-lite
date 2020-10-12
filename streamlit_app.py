@@ -4,8 +4,6 @@ import streamlit as st
 
 import coin_metrics
 
-st.title("Let's analyze some Penguin Data 🐧📊.")
-
 
 @st.cache  # add caching so we load the data only once
 def load_data():
@@ -16,7 +14,7 @@ def load_data():
 
 @st.cache
 def get_price_data(asset, metric):
-    rates = coin_metrics.get_reference_rates(asset, metric=metric)
+    rates = coin_metrics.get_reference_rates_pandas(asset, metric=metric)
     return pd.DataFrame(data=rates)
 
 
@@ -32,17 +30,21 @@ def get_metrics():
 
 @st.cache
 def get_metric_info():
-    metrics = coin_metrics.get_metric_info()
+    metrics = coin_metrics.get_metric_info_pandas()
     return pd.DataFrame(data=metrics)
 
 
 @st.cache
 def get_asset_names():
-    assets = coin_metrics.get_asset_full_names()
+    assets = coin_metrics.get_asset_full_names_pandas()
     return pd.DataFrame(data=assets)
 
 
 if __name__ == "__main__":
+    st.title("Let's analyze some coin data📊.")
+
+    st.write("Can you get rich on crypto?!")
+
     selected_asset = st.selectbox('Choose an asset', get_assets())
 
     asset_names = get_asset_names()
@@ -55,25 +57,12 @@ if __name__ == "__main__":
 
     df = get_price_data(selected_asset, selected_metric)
 
-    # st.write("Let's look at raw data in the Pandas Data Frame.")
-
-    # st.write(df)
-
-    # chart = alt.Chart(df).mark_point().encode(
-    #     x=alt.X("body_mass_g", scale=alt.Scale(zero=False)),
-    #     y=alt.Y("flipper_length_mm", scale=alt.Scale(zero=False)),
-    #     color=alt.Y("species")
-    # ).properties(
-    #     width=600, height=400
-    # ).interactive()
-    #
-
     chart = alt.Chart(df).mark_line().encode(
         x=alt.X("time", type="temporal"),
         y=alt.Y(selected_metric, type="quantitative"),
         tooltip=["time", selected_metric]
     ).properties(
-        width=1000, height=1000
+        width=900, height=1000
     ).interactive()
 
     st.write(chart)

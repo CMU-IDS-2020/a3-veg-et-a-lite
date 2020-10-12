@@ -41,19 +41,16 @@ def get_metrics():
 
 
 def get_reference_rates(asset, metric="PriceUSD", start=None, end=None):
-    """ Gets metrics for a particular asset between start and end. Metrics retrieved is specified by metrics array.
-    Response is a list where each entry is of the form"
-        {
-          "time": "yyyy-mm-ddTHH:MM:SSZ",
-          "values": []
-        }
-    Where values array is in the same order as supplied metrics """
     params = {'metrics': [metric]}
     if start:
         params['start'] = start
     if end:
         params['end'] = end
-    reference_rates = get(f"{ASSETS_ENDPOINT}/{asset}/metricdata", params=params)
+    return get(f"{ASSETS_ENDPOINT}/{asset}/metricdata", params=params)
+
+
+def get_reference_rates_pandas(asset, metric="PriceUSD", start=None, end=None):
+    reference_rates = get_reference_rates(asset, metric, start, end)
     res = {}
     if reference_rates:
         # convert to pandas friendly format
@@ -73,13 +70,16 @@ def get_reference_rates(asset, metric="PriceUSD", start=None, end=None):
             for ind, val in enumerate(row["values"]):
                 column = metric_columns[ind]
                 res[column].append(val)
-
     return res
 
 
 def get_metric_info():
     metrics_info = get(f"{COIN_METRICS_API}/metric_info")
-    metrics_info = metrics_info["metricsInfo"]
+    return metrics_info["metricsInfo"]
+
+
+def get_metric_info_pandas():
+    metrics_info = get_metric_info()
     res = {"Metric": [], "Full Name": [], "Description": []}
     for metric in metrics_info:
         res["Metric"].append(metric["id"])
@@ -93,7 +93,7 @@ def get_asset_info():
     return asset_info["assetsInfo"]
 
 
-def get_asset_full_names():
+def get_asset_full_names_pandas():
     asset_info = get_asset_info()
     res = {"Asset Id": [], "Asset Name": []}
     for asset in asset_info:
@@ -106,5 +106,5 @@ def get_asset_full_names():
 if __name__ == "__main__":
     print(get_assets())
     print(get_metrics())
-    print(get_reference_rates(get_assets()[0]))
-    print(get_metric_info())
+    print(get_reference_rates_pandas(get_assets()[0]))
+    print(get_metric_info_pandas())
