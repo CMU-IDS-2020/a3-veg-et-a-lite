@@ -40,7 +40,7 @@ def get_metrics():
         return []
 
 
-def get_reference_rates(asset, metrics=None, start=None, end=None):
+def get_reference_rates(asset, metric="PriceUSD", start=None, end=None):
     """ Gets metrics for a particular asset between start and end. Metrics retrieved is specified by metrics array.
     Response is a list where each entry is of the form"
         {
@@ -48,22 +48,43 @@ def get_reference_rates(asset, metrics=None, start=None, end=None):
           "values": []
         }
     Where values array is in the same order as supplied metrics """
-    if metrics is None:
-        metrics = ["PriceUSD"]
-    params = {'metrics': metrics}
+    params = {'metrics': [metric]}
     if start:
         params['start'] = start
     if end:
         params['end'] = end
     reference_rates = get(f"{ASSETS_ENDPOINT}/{asset}/metricdata", params=params)
+    res = {}
     if reference_rates:
-        return reference_rates["metricData"]["series"]
-    else:
-        return []
+        # convert to pandas friendly format
+
+        # Initialize all columns to empty lists
+        res["time"] = []
+        metric_columns = reference_rates["metricData"]["metrics"]
+        for column in metric_columns:
+            res[column] = []
+
+        # Fill in columns
+        data = reference_rates["metricData"]["series"]
+        for row in data:
+            # Add time to row
+            res["time"].append(row["time"])
+            # Add each value to row
+            for ind, val in enumerate(row["values"]):
+                column = metric_columns[ind]
+                res[column].append(val)
+
+    return res
+
+
+def get_metric_info():
+    metrics_info = get(f"{COIN_METRICS_API}/metric_info")
+    return metrics_info["metricsInfo"]
 
 
 # This is just a demo of the API, we should really never run this file
 if __name__ == "__main__":
-    print(get_assets())
-    print(get_metrics())
+    # print(get_assets())
+    # print(get_metrics())
     print(get_reference_rates(get_assets()[0]))
+    # print(get_metric_info())
