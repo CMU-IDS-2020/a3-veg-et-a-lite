@@ -79,12 +79,32 @@ def get_reference_rates(asset, metric="PriceUSD", start=None, end=None):
 
 def get_metric_info():
     metrics_info = get(f"{COIN_METRICS_API}/metric_info")
-    return metrics_info["metricsInfo"]
+    metrics_info = metrics_info["metricsInfo"]
+    res = {"Metric": [], "Full Name": [], "Description": []}
+    for metric in metrics_info:
+        res["Metric"].append(metric["id"])
+        res["Full Name"].append(metric["name"])
+        res["Description"].append(metric["description"])
+    return res
+
+
+def get_asset_info():
+    asset_info = get(f"{COIN_METRICS_API}/asset_info")
+    return asset_info["assetsInfo"]
+
+
+def get_asset_full_names():
+    asset_info = get_asset_info()
+    res = {"Asset Id": [], "Asset Name": []}
+    for asset in asset_info:
+        res["Asset Id"].append(asset["id"])
+        res["Asset Name"].append(asset["name"])
+    return res
 
 
 # This is just a demo of the API, we should really never run this file
 if __name__ == "__main__":
-    # print(get_assets())
-    # print(get_metrics())
+    print(get_assets())
+    print(get_metrics())
     print(get_reference_rates(get_assets()[0]))
-    # print(get_metric_info())
+    print(get_metric_info())

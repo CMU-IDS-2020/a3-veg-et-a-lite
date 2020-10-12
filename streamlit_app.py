@@ -30,35 +30,50 @@ def get_metrics():
     return coin_metrics.get_metrics()
 
 
-selected_asset = st.selectbox('Choose an asset', get_assets())
+@st.cache
+def get_metric_info():
+    metrics = coin_metrics.get_metric_info()
+    return pd.DataFrame(data=metrics)
 
-selected_metric = st.selectbox('Choose a metric', get_metrics())
 
-df = get_price_data(selected_asset, selected_metric)
+@st.cache
+def get_asset_names():
+    assets = coin_metrics.get_asset_full_names()
+    return pd.DataFrame(data=assets)
 
-st.write("Let's look at raw data in the Pandas Data Frame.")
 
-st.write(df)
+if __name__ == "__main__":
+    selected_asset = st.selectbox('Choose an asset', get_assets())
 
-st.write(
-    "Hmm 🤔, is there some correlation between body mass and flipper length? Let's make a scatterplot with [Altair]("
-    "https://altair-viz.github.io/) to find.")
+    asset_names = get_asset_names()
+    st.write(asset_names)
 
-# chart = alt.Chart(df).mark_point().encode(
-#     x=alt.X("body_mass_g", scale=alt.Scale(zero=False)),
-#     y=alt.Y("flipper_length_mm", scale=alt.Scale(zero=False)),
-#     color=alt.Y("species")
-# ).properties(
-#     width=600, height=400
-# ).interactive()
-#
+    selected_metric = st.selectbox('Choose a metric', get_metrics())
 
-chart = alt.Chart(df).mark_line().encode(
-    x=alt.X("time", type="temporal"),
-    y=alt.Y(selected_metric, type="quantitative"),
-    tooltip=["time", selected_metric]
-).properties(
-    width=1000, height=1000
-).interactive()
+    metric_info = get_metric_info()
+    st.write(metric_info)
 
-st.write(chart)
+    df = get_price_data(selected_asset, selected_metric)
+
+    # st.write("Let's look at raw data in the Pandas Data Frame.")
+
+    # st.write(df)
+
+    # chart = alt.Chart(df).mark_point().encode(
+    #     x=alt.X("body_mass_g", scale=alt.Scale(zero=False)),
+    #     y=alt.Y("flipper_length_mm", scale=alt.Scale(zero=False)),
+    #     color=alt.Y("species")
+    # ).properties(
+    #     width=600, height=400
+    # ).interactive()
+    #
+
+    chart = alt.Chart(df).mark_line().encode(
+        x=alt.X("time", type="temporal"),
+        y=alt.Y(selected_metric, type="quantitative"),
+        tooltip=["time", selected_metric]
+    ).properties(
+        width=1000, height=1000
+    ).interactive()
+
+    st.write(chart)
