@@ -1,7 +1,9 @@
 import altair as alt
 import pandas as pd
 import streamlit as st
-
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 import coin_metrics
 
 
@@ -45,24 +47,45 @@ if __name__ == "__main__":
 
     st.write("Can you get rich on crypto?!")
 
-    selected_asset = st.selectbox('Choose an asset', get_assets())
+    selected_asset = st.sidebar.selectbox('Choose an asset', get_assets())
+    #check data box to display the df for the values below
+    if st.checkbox('Show Asset Data Names'):
+        asset_names = get_asset_names()
+        st.write(asset_names)
 
-    asset_names = get_asset_names()
-    st.write(asset_names)
-
-    selected_metric = st.selectbox('Choose a metric', get_metrics())
-
-    metric_info = get_metric_info()
-    st.write(metric_info)
+    selected_metric = st.sidebar.selectbox('Choose a metric', get_metrics())
+    #check data box to display the df for the values below
+    if st.checkbox('Show Metric Data Info'):
+        metric_info = get_metric_info()
+        st.write(metric_info)
 
     df = get_price_data(selected_asset, selected_metric)
-
+    
+    #the selection brush oriented on the x-axis
+    #important not here had to comment out the interactive function below
+    #to convert the graph to static
+    brush = alt.selection_interval(encodings=['x'])
     chart = alt.Chart(df).mark_line().encode(
         x=alt.X("time", type="temporal"),
         y=alt.Y(selected_metric, type="quantitative"),
         tooltip=["time", selected_metric]
     ).properties(
         width=900, height=1000
-    ).interactive()
+    )#.interactive()
 
-    st.write(chart)
+    st.write(chart.add_selection(brush))
+    
+
+
+    diamonds = sns.load_dataset("diamonds")
+    f, ax = plt.subplots(figsize=(6.5, 6.5))
+    sns.despine(f, left=True, bottom=True)
+    clarity_ranking = ["I1", "SI2", "SI1", "VS2", "VS1", "VVS2", "VVS1", "IF"]
+    sns.scatterplot(x="carat", y="price",
+                hue="clarity", size="depth",
+                palette="ch:r=-.2,d=.3_r",
+                hue_order=clarity_ranking,
+                sizes=(1, 8), linewidth=0,
+                data=diamonds, ax=ax)
+    
+    st.pyplot()
