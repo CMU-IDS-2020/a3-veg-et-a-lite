@@ -113,7 +113,11 @@ def display_metrics_dropdown(asset_metrics):
     return metric_name, metric_id
 
 
-def display_main_chart(assets_info, metric_id, metric_name):
+def get_scale():
+    return "symlog" if st.sidebar.checkbox("Convert chart to symlog scale") else "linear"
+
+
+def display_main_chart(assets_info, metric_id, metric_name, scale="linear"):
     dfs = [get_price_data(asset_id, metric_id, asset_name) for asset_name, asset_id, _ in assets_info]
     df = pd.concat(dfs)
     asset_names = [asset_name for asset_name, _, _ in assets_info]
@@ -124,7 +128,7 @@ def display_main_chart(assets_info, metric_id, metric_name):
     brush = alt.selection_interval(encodings=['x'])
     chart = alt.Chart(df).mark_line().encode(
         x=alt.X("time", type="temporal", title="Time"),
-        y=alt.Y(metric_id, type="quantitative", title=metric_name),
+        y=alt.Y(metric_id, type="quantitative", title=metric_name, scale=alt.Scale(type=scale)),
         tooltip=[alt.Tooltip("time", type="temporal", title="Time"),
                  alt.Tooltip(metric_id, type="quantitative", title=metric_name)],
         color="Name"
@@ -157,5 +161,8 @@ if __name__ == "__main__":
     if selected_assets_info:
         selected_metric_name, selected_metric_id = display_metrics_dropdown(
             [set(selected_asset_metric) for _, _, selected_asset_metric in selected_assets_info])
-        display_main_chart(selected_assets_info, selected_metric_id, selected_metric_name)
+        selected_scale = get_scale()
+        display_main_chart(selected_assets_info, selected_metric_id, selected_metric_name, selected_scale)
         display_exchange_info([(asset_name, asset_id) for asset_name, asset_id, _ in selected_assets_info])
+    else:
+        st.header("Select an asset in the sidebar")
