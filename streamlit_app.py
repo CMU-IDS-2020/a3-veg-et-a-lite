@@ -108,6 +108,7 @@ def display_metrics_dropdown(asset_metrics):
     metric_description = id_to_info_map[metric_id][1]
 
     with st.sidebar.beta_expander("See explanations for metric"):
+        st.markdown(f"**{metric_name}**")
         st.markdown(metric_description)
 
     return metric_name, metric_id
