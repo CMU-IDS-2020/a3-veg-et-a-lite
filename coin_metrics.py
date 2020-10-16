@@ -51,7 +51,7 @@ def get_reference_rates_pandas(asset, metric="PriceUSD", start=None, end=None):
     reference_rates = get_reference_rates(asset, metric, start, end)
     res = {}
     if reference_rates:
-        # convert to pandas friendly format
+        # convert to pandas friendly format, which is {"col1": [<col1-vals>], "col2": [<col2-vals>], ...}
 
         # Initialize all columns to empty lists
         res["time"] = []
@@ -85,10 +85,16 @@ def get_asset_info():
     return asset_info["assetsInfo"]
 
 
+def get_exchange_info():
+    exchange_info = get(f"{COIN_METRICS_API}/exchange_info")
+    return exchange_info["exchangesInfo"]
+
+
 # This is just a demo of the API, we should really never run this file
 if __name__ == "__main__":
-    print(get_assets())
-    print(get_metrics())
-    print(get_reference_rates_pandas(get_assets()[0]))
-    print(get_asset_info()[0])
-    print(get_metric_info())
+    # print(get_assets())
+    # print(get_metrics())
+    # print(get_reference_rates_pandas(get_assets()[0]))
+    # print(get_asset_info()[0])
+    # print(get_metric_info())
+    print(get_exchange_info())

@@ -5,6 +5,8 @@ import streamlit as st
 import coin_metrics
 
 
+# Get data from coin metrics API
+
 @st.cache
 def get_price_data(asset, metric):
     rates = coin_metrics.get_reference_rates_pandas(asset, metric=metric)
@@ -54,19 +56,38 @@ def get_metric_info_maps(metric_info):
     return id_to_info, name_to_id
 
 
-def title_and_info():
+@st.cache
+def get_exchange_info():
+    return coin_metrics.get_exchange_info()
+
+
+def does_exchange_have_asset(exchange, asset_id):
+    for asset in exchange["marketsInfo"]:
+        if asset["assetIdBase"] == asset_id:
+            return True
+    return False
+
+
+@st.cache
+def get_exchanges_for_asset(exchanges_info, asset_id):
+    return [exchange for exchange in exchanges_info if does_exchange_have_asset(exchange, asset_id)]
+
+
+# Display charts in streamlit
+
+def display_title_and_info():
     st.title("Let's analyze some crypto data ₿📊.")
     st.write("Can you get rich on crypto?!")
 
 
-def asset_dropdown():
+def display_asset_dropdown():
     asset_map = get_asset_info_map()
     asset_name = st.sidebar.selectbox('Choose an asset', [*asset_map.keys()])
     asset_id, asset_metrics = asset_map[asset_name]
     return asset_name, asset_id, asset_metrics
 
 
-def metrics_dropdown(asset_metrics):
+def display_metrics_dropdown(asset_metrics):
     metrics_info = get_metric_info()
     id_to_info_map, name_to_id_map = get_metric_info_maps(metrics_info)
     metric_choices = [id_to_info_map[metric][0] for metric in asset_metrics]
@@ -81,7 +102,7 @@ def metrics_dropdown(asset_metrics):
     return metric_name, metric_id
 
 
-def main_chart(asset_id, asset_name, metric_id, metric_name):
+def display_main_chart(asset_id, asset_name, metric_id, metric_name):
     df = get_price_data(asset_id, metric_id)
 
     # the selection brush oriented on the x-axis
@@ -104,8 +125,18 @@ def main_chart(asset_id, asset_name, metric_id, metric_name):
     # st.pyplot()
 
 
+def display_exchange_info(asset_id, asset_name):
+    exchange_info = get_exchange_info()
+    relevant_exchanges = get_exchanges_for_asset(exchange_info, asset_id)
+    relevant_exchange_names = [exchange["id"] for exchange in relevant_exchanges]
+    st.header(f"Available exchanges for {asset_name}")
+    for exchange in relevant_exchange_names:
+        st.markdown(exchange)
+
+
 if __name__ == "__main__":
-    title_and_info()
-    selected_asset_name, selected_asset_id, selected_asset_metrics = asset_dropdown()
-    selected_metric_name, selected_metric_id = metrics_dropdown(selected_asset_metrics)
-    main_chart(selected_asset_id, selected_asset_name, selected_metric_id, selected_metric_name)
+    display_title_and_info()
+    selected_asset_name, selected_asset_id, selected_asset_metrics = display_asset_dropdown()
+    selected_metric_name, selected_metric_id = display_metrics_dropdown(selected_asset_metrics)
+    display_main_chart(selected_asset_id, selected_asset_name, selected_metric_id, selected_metric_name)
+    display_exchange_info(selected_asset_id, selected_asset_name)
