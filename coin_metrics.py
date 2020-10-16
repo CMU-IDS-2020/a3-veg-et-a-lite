@@ -16,7 +16,7 @@ def get(url, params=None):
     if response.status_code == 200:
         return json.loads(response.text)
     else:
-        print(f"Unable to perform REST call. Status {response.status_code}. Message: {response.text}")
+        print(f"Unable to perform REST call {url} with params {params}. Status {response.status_code}. Message: {response.text}")
         return None
 
 

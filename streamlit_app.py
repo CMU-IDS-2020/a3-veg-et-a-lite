@@ -8,9 +8,12 @@ import coin_metrics
 # Get data from coin metrics API
 
 @st.cache
-def get_price_data(asset, metric):
-    rates = coin_metrics.get_reference_rates_pandas(asset, metric=metric)
-    return pd.DataFrame(data=rates)
+def get_price_data(asset_id, metric, asset_name):
+    rates = coin_metrics.get_reference_rates_pandas(asset_id, metric=metric)
+    df = pd.DataFrame(data=rates)
+    # Will be useful for combining dataframes for multiple assets
+    df["Name"] = asset_name
+    return df
 
 
 @st.cache
@@ -82,15 +85,23 @@ def display_title_and_info():
 
 def display_asset_dropdown():
     asset_map = get_asset_info_map()
-    asset_name = st.sidebar.selectbox('Choose an asset', [*asset_map.keys()])
-    asset_id, asset_metrics = asset_map[asset_name]
-    return asset_name, asset_id, asset_metrics
+    asset_options = [*asset_map.keys()]
+    asset_names = st.sidebar.multiselect('Choose some assets', asset_options, default=asset_options[0])
+    if asset_names:
+        asset_ids_and_metrics = [asset_map[asset_name] for asset_name in asset_names]
+        # Sort of a hacky way to end up with a flattened list after the zip
+        asset_ids = [asset[0] for asset in asset_ids_and_metrics]
+        asset_metrics = [asset[1] for asset in asset_ids_and_metrics]
+        return list(zip(asset_names, asset_ids, asset_metrics))
+    else:
+        return []
 
 
 def display_metrics_dropdown(asset_metrics):
+    common_metrics = set.intersection(*asset_metrics)
     metrics_info = get_metric_info()
     id_to_info_map, name_to_id_map = get_metric_info_maps(metrics_info)
-    metric_choices = [id_to_info_map[metric][0] for metric in asset_metrics]
+    metric_choices = [id_to_info_map[metric][0] for metric in common_metrics]
 
     metric_name = st.sidebar.selectbox('Choose a metric', metric_choices)
     metric_id = name_to_id_map[metric_name]
@@ -102,11 +113,13 @@ def display_metrics_dropdown(asset_metrics):
     return metric_name, metric_id
 
 
-def display_main_chart(asset_id, asset_name, metric_id, metric_name):
-    df = get_price_data(asset_id, metric_id)
+def display_main_chart(assets_info, metric_id, metric_name):
+    dfs = [get_price_data(asset_id, metric_id, asset_name) for asset_name, asset_id, _ in assets_info]
+    df = pd.concat(dfs)
+    asset_names = [asset_name for asset_name, _, _ in assets_info]
 
     # the selection brush oriented on the x-axis
-    # important not here had to comment out the interactive function below
+    # important not here had to comment out the interactive function chart
     # to convert the graph to static
     brush = alt.selection_interval(encodings=['x'])
     chart = alt.Chart(df).mark_line().encode(
@@ -114,10 +127,10 @@ def display_main_chart(asset_id, asset_name, metric_id, metric_name):
         y=alt.Y(metric_id, type="quantitative", title=metric_name),
         tooltip=[alt.Tooltip("time", type="temporal", title="Time"),
                  alt.Tooltip(metric_id, type="quantitative", title=metric_name)],
-
+        color="Name"
     ).properties(
         width=900, height=1000,
-        title=asset_name
+        title=", ".join(asset_names)
     )  # .interactive()
 
     st.write(chart.add_selection(brush))
@@ -125,18 +138,24 @@ def display_main_chart(asset_id, asset_name, metric_id, metric_name):
     # st.pyplot()
 
 
-def display_exchange_info(asset_id, asset_name):
+def display_exchange_info(assets):
+    num = len(assets)
+    cols = st.beta_columns(num)
     exchange_info = get_exchange_info()
-    relevant_exchanges = get_exchanges_for_asset(exchange_info, asset_id)
-    relevant_exchange_names = [exchange["id"] for exchange in relevant_exchanges]
-    st.header(f"Available exchanges for {asset_name}")
-    for exchange in relevant_exchange_names:
-        st.markdown(exchange)
+    for ind, col in enumerate(cols):
+        asset_name, asset_id = assets[ind]
+        relevant_exchanges = get_exchanges_for_asset(exchange_info, asset_id)
+        relevant_exchange_names = [exchange["id"] for exchange in relevant_exchanges]
+        col.header(f"Available exchanges for {asset_name}")
+        for exchange in relevant_exchange_names:
+            col.markdown(exchange)
 
 
 if __name__ == "__main__":
     display_title_and_info()
-    selected_asset_name, selected_asset_id, selected_asset_metrics = display_asset_dropdown()
-    selected_metric_name, selected_metric_id = display_metrics_dropdown(selected_asset_metrics)
-    display_main_chart(selected_asset_id, selected_asset_name, selected_metric_id, selected_metric_name)
-    display_exchange_info(selected_asset_id, selected_asset_name)
+    selected_assets_info = display_asset_dropdown()
+    if selected_assets_info:
+        selected_metric_name, selected_metric_id = display_metrics_dropdown(
+            [set(selected_asset_metric) for _, _, selected_asset_metric in selected_assets_info])
+        display_main_chart(selected_assets_info, selected_metric_id, selected_metric_name)
+        display_exchange_info([(asset_name, asset_id) for asset_name, asset_id, _ in selected_assets_info])
