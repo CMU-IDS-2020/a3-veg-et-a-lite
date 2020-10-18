@@ -1,6 +1,6 @@
 # CMU Interactive Data Science Assigment 3
 
-* **Team members**: Joseph Koshakow (jkoshako) and Joshua A Vargas Perez (joshuav)
+* **Team members**: Joseph Koshakow (jkoshako) and Joshua A Vargas Perez (joshuav) and Jeffrey Huang (jchuang2)
 * **Online URL**: https://share.streamlit.io/cmu-ids-2020/a3-veg-et-a-lite
 
 ## Instructions
@@ -18,5 +18,5 @@ Before you can view your application online, you need to have it set up with Str
 ### Deliverables
 
 - [ ] An interactive data science or machine learning application using Streamlit.
-- [ ] The URL at the top of this readme needs to point to your application online. It should also list the names of the team members. 
+- [ x] The URL at the top of this readme needs to point to your application online. It should also list the names of the team members. 
 - [ ] A write-up that describes the goals of your application, justifies design decisions, and gives an overview of your development process. Use the `writeup.md` file in this repository. You may add more sections to the document than the template has right now.
