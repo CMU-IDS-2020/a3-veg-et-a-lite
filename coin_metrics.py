@@ -96,5 +96,6 @@ if __name__ == "__main__":
     # print(get_metrics())
     # print(get_reference_rates_pandas(get_assets()[0]))
     # print(get_asset_info()[0])
-    # print(get_metric_info())
-    print(get_exchange_info())
+    for metric in get_metric_info():
+        print(metric)
+    # print(get_exchange_info())

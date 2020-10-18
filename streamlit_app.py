@@ -67,6 +67,7 @@ def get_exchange_info():
     return coin_metrics.get_exchange_info()
 
 
+@st.cache
 def does_exchange_have_asset(exchange, asset_id):
     for asset in exchange["marketsInfo"]:
         if asset["assetIdBase"] == asset_id:
@@ -101,10 +102,9 @@ def display_asset_dropdown():
 
 
 def display_metrics_dropdown(asset_metrics):
-    common_metrics = set.intersection(*asset_metrics)
     metrics_info = get_metric_info()
     id_to_info_map, name_to_id_map = get_metric_info_maps(metrics_info)
-    metric_choices = [id_to_info_map[metric][0] for metric in common_metrics]
+    metric_choices = [id_to_info_map[metric][0] for metric in asset_metrics]
 
     metric_name = st.sidebar.selectbox('Choose a metric', metric_choices)
     metric_id = name_to_id_map[metric_name]
@@ -117,29 +117,35 @@ def display_metrics_dropdown(asset_metrics):
     return metric_name, metric_id
 
 
-def display_scale_checkbox():
-    return "symlog" if st.sidebar.checkbox("Convert chart to symlog scale") else "linear"
+def display_metric_scale_checkbox():
+    return "symlog" if st.sidebar.checkbox("Convert metric chart to symlog scale") else "linear"
 
 
-def display_main_chart(assets_info, metric_id, metric_name, scale="linear"):
-    dfs = [get_data(asset_id, metric_id, asset_name) for asset_name, asset_id, _ in assets_info]
-    df = pd.concat(dfs)
+def display_transaction_scale_checkbox():
+    return "log" if st.sidebar.checkbox("Convert transaction count to log scale") else "linear"
 
-    chart_container = st.beta_container()
 
+def get_aggregated_metrics(assets, metric_id):
+    dfs = [get_data(asset_id, metric_id, asset_name) for asset_name, asset_id, in assets]
+    return pd.concat(dfs)
+
+
+def display_date_slider(df):
     min_date = min(df["time"]).to_pydatetime()
     max_date = max(df["time"]).to_pydatetime()
-    selected_min, selected_max = st.slider("Select Date Range", min_date, max_date, (min_date, max_date))
+    return st.slider("Select Date Range", min_date, max_date, (min_date, max_date))
 
-    filtered_df = df[(df["time"] >= selected_min) & (df["time"] <= selected_max)]
 
-    asset_names = [asset_name for asset_name, _, _ in assets_info]
+def filter_metrics_by_date(df, start_date, end_date):
+    return df[(df["time"] >= start_date) & (df["time"] <= end_date)]
 
+
+def display_main_chart(metrics_df, metric_id, metric_name, asset_names, container, scale="linear"):
     # the selection brush oriented on the x-axis
     # important not here had to comment out the interactive function below
     # to convert the graph to static
     brush = alt.selection_interval(encodings=['x'])
-    chart = alt.Chart(filtered_df).mark_line().encode(
+    chart = alt.Chart(metrics_df).mark_line().encode(
         x=alt.X("time", type="temporal", title="Time"),
         y=alt.Y(metric_id, type="quantitative", title=metric_name, scale=alt.Scale(type=scale)),
         tooltip=[alt.Tooltip("time", type="temporal", title="Time"),
@@ -147,35 +153,70 @@ def display_main_chart(assets_info, metric_id, metric_name, scale="linear"):
         color="Name"
     ).properties(
         width=700, height=700,
-        title=", ".join(asset_names)
-    )  #.add_selection(select_year).transform_filter(select_year) # .interactive(bind_y = False)
+        # title=", ".join(asset_names)
+    )  # .add_selection(select_year).transform_filter(select_year) # .interactive(bind_y = False)
 
-    chart_container.write(chart.add_selection(brush))
+    container.write(chart.add_selection(brush))
 
     # st.pyplot()
 
 
-def display_exchange_info(assets):
-    num = len(assets)
-    cols = st.beta_columns(num)
+def display_exchange_info(assets, start_date, end_date, scale="linear"):
+    # TxCnt
+    # This is the total transactions
+    tran_count_df = get_aggregated_metrics(assets, "TxCnt")
+    tran_count_df = filter_metrics_by_date(tran_count_df, start_date, end_date)
+    tran_count_df["TxCnt"] = tran_count_df["TxCnt"].astype(float)
+    tran_count_df = tran_count_df.groupby("Name").agg({"TxCnt": "mean"})
+
     exchange_info = get_exchange_info()
-    for ind, col in enumerate(cols):
-        asset_name, asset_id = assets[ind]
+    exchange_df = pd.DataFrame({"asset": [], "exchanges": [], "num_exchanges": []})
+
+    for asset_name, asset_id in assets:
         relevant_exchanges = get_exchanges_for_asset(exchange_info, asset_id)
         relevant_exchange_names = [exchange["id"] for exchange in relevant_exchanges]
-        col.header(f"Available exchanges for {asset_name}")
-        for exchange in relevant_exchange_names:
-            col.markdown(exchange)
+        exchange_df = exchange_df.append(
+            {"asset": asset_name, "exchanges": relevant_exchange_names, "num_exchanges": len(relevant_exchange_names)},
+            ignore_index=True)
+
+    exchange_df = exchange_df.set_index("asset")
+    merged = pd.merge(exchange_df, tran_count_df, left_index=True, right_index=True)
+    merged = merged.reset_index()
+    merged["Asset"] = merged["index"]
+
+    chart = alt.Chart(merged).mark_point().encode(
+        x=alt.X("num_exchanges", title="Number of Exchanges"),
+        y=alt.Y("TxCnt", title="Average Transaction Count", scale=alt.Scale(type=scale)),
+        tooltip=[alt.Tooltip("Asset", type="nominal", title="Asset"),
+                 alt.Tooltip("TxCnt", type="quantitative", title="Average Transaction Count"),
+                 alt.Tooltip("exchanges", type="nominal", title="Available Exchanges")],
+        color="Asset"
+    ).properties(
+        width=600, height=400,
+        title="How does the number of exchanges affect the transaction count?"
+    )
+    st.write(chart)
 
 
 if __name__ == "__main__":
     display_title_and_info()
     selected_assets_info = display_asset_dropdown()
     if selected_assets_info:
-        selected_metric_name, selected_metric_id = display_metrics_dropdown(
-            [set(selected_asset_metric) for _, _, selected_asset_metric in selected_assets_info])
-        selected_scale = display_scale_checkbox()
-        display_main_chart(selected_assets_info, selected_metric_id, selected_metric_name, selected_scale)
-        display_exchange_info([(asset_name, asset_id) for asset_name, asset_id, _ in selected_assets_info])
+        common_metrics = set.intersection(
+            *[set(selected_asset_metric) for _, _, selected_asset_metric in selected_assets_info])
+        selected_metric_name, selected_metric_id = display_metrics_dropdown(common_metrics)
+        selected_scale = display_metric_scale_checkbox()
+
+        metric_df = get_aggregated_metrics([(asset_name, asset_id) for asset_name, asset_id, _ in selected_assets_info],
+                                           selected_metric_id)
+        chart_container = st.beta_container()
+        selected_start_date, selected_end_date = display_date_slider(metric_df)
+        metric_df = filter_metrics_by_date(metric_df, selected_start_date, selected_end_date)
+        display_main_chart(metric_df, selected_metric_id, selected_metric_name,
+                           [asset_name for asset_name, _, _ in selected_assets_info], chart_container, selected_scale)
+        if "TxCnt" in common_metrics:
+            exchange_scale = display_transaction_scale_checkbox()
+            display_exchange_info([(asset_name, asset_id) for asset_name, asset_id, _ in selected_assets_info],
+                                  selected_start_date, selected_end_date, exchange_scale)
     else:
         st.header("Select an asset in the sidebar")
