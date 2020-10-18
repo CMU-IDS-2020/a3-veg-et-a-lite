@@ -12,7 +12,12 @@ Let's go super saiyan on Crypto currency. Our graphs allow you to interactively 
 TODO: **A clear description of the goals of your project.** Describe the question that you are enabling a user to answer. The question should be compelling and the solution should be focused on helping users achieve their goals. 
 
 ## Design
+Some of these design decisions are covered in the development section but we wanted to highlight some important ones here
 
+### Realtime Data
+Our customers expect the very best from us; our product wouldn't be very useful to them if we didn't show them the most up to date metrics available. It was for this reason that we chose to not use static csv files as our data source, but instead integrate with a web API to be able to continuously pull and display the most up date, realtime metrics available. 
+
+REMOVE THIS WHEN WE'RE DONE
 TODO: **A rationale for your design decisions.** How did you choose your particular visual encodings and interaction techniques? What alternatives did you consider and how did you arrive at your ultimate choices?
 
 ## Development
