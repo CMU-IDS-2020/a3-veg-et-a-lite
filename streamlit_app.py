@@ -6,9 +6,13 @@ import coin_metrics
 
 
 @st.cache
-def get_price_data(asset, metric):
+def get_data(asset, metric):
     rates = coin_metrics.get_reference_rates_pandas(asset, metric=metric)
-    return pd.DataFrame(data=rates)
+    df = pd.DataFrame(data=rates)
+    df["time"] = pd.to_datetime(df["time"])
+    df['year'] = df['time'].dt.year
+    df['month'] = df['time'].dt.month
+    return df
 
 
 @st.cache
@@ -82,28 +86,32 @@ def metrics_dropdown(asset_metrics):
 
 
 def main_chart(asset_id, asset_name, metric_id, metric_name):
-    df = get_price_data(asset_id, metric_id)
-    df['year'] = df['time'].str[:4].astype(int)
-    df['month'] = df['time'].str[5:7].astype(int)
-    st.write(df.head(100000)) # Only for testing
-    slider_year = alt.binding_range(min=2017, max=2020, step=1)
-    select_year = alt.selection_single(name="year", fields=['year'], bind=slider_year, init={'year': 2020})
+    df = get_data(asset_id, metric_id)
+
+    chart_container = st.beta_container()
+
+    min_date = min(df["time"]).to_pydatetime()
+    max_date = max(df["time"]).to_pydatetime()
+    selected_min, selected_max = st.slider("Select Date Range", min_date, max_date, (min_date, max_date))
+
+    filtered_df = df[(df["time"] >= selected_min) & (df["time"] <= selected_max)]
+
     # the selection brush oriented on the x-axis
     # important not here had to comment out the interactive function below
     # to convert the graph to static
     brush = alt.selection_interval(encodings=['x'])
-    chart = alt.Chart(df).mark_line().encode(
+    chart = alt.Chart(filtered_df).mark_line().encode(
         x=alt.X("time", type="temporal", title="Time"),
         y=alt.Y(metric_id, type="quantitative", title=metric_name),
         tooltip=[alt.Tooltip("time", type="temporal", title="Time"),
                  alt.Tooltip(metric_id, type="quantitative", title=metric_name)],
 
     ).properties(
-        width=900, height=1000,
+        width=700, height=700,
         title=asset_name
-    ).add_selection(select_year).transform_filter(select_year) # .interactive(bind_y = False)
+    )  #.add_selection(select_year).transform_filter(select_year) # .interactive(bind_y = False)
 
-    st.write(chart.add_selection(brush))
+    chart_container.write(chart.add_selection(brush))
 
     # st.pyplot()
 
