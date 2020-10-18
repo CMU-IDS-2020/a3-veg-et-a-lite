@@ -83,7 +83,11 @@ def metrics_dropdown(asset_metrics):
 
 def main_chart(asset_id, asset_name, metric_id, metric_name):
     df = get_price_data(asset_id, metric_id)
-
+    df['year'] = df['time'].str[:4].astype(int)
+    df['month'] = df['time'].str[5:7].astype(int)
+    st.write(df.head(100000)) # Only for testing
+    slider_year = alt.binding_range(min=2017, max=2020, step=1)
+    select_year = alt.selection_single(name="year", fields=['year'], bind=slider_year, init={'year': 2020})
     # the selection brush oriented on the x-axis
     # important not here had to comment out the interactive function below
     # to convert the graph to static
@@ -97,7 +101,7 @@ def main_chart(asset_id, asset_name, metric_id, metric_name):
     ).properties(
         width=900, height=1000,
         title=asset_name
-    )  # .interactive()
+    ).add_selection(select_year).transform_filter(select_year) # .interactive(bind_y = False)
 
     st.write(chart.add_selection(brush))
 
