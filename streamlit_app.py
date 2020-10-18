@@ -8,9 +8,12 @@ import coin_metrics
 # Get data from coin metrics API
 
 @st.cache
-def get_price_data(asset_id, metric, asset_name):
-    rates = coin_metrics.get_reference_rates_pandas(asset_id, metric=metric)
+def get_data(asset_id, asset_name, metric):
+    rates = coin_metrics.get_reference_rates_pandas(asset, metric=metric)
     df = pd.DataFrame(data=rates)
+    df["time"] = pd.to_datetime(df["time"])
+    df['year'] = df['time'].dt.year
+    df['month'] = df['time'].dt.month
     # Will be useful for combining dataframes for multiple assets
     df["Name"] = asset_name
     return df
@@ -119,26 +122,35 @@ def get_scale():
 
 
 def display_main_chart(assets_info, metric_id, metric_name, scale="linear"):
-    dfs = [get_price_data(asset_id, metric_id, asset_name) for asset_name, asset_id, _ in assets_info]
+    dfs = [get_data(asset_id, metric_id, asset_name) for asset_name, asset_id, _ in assets_info]
     df = pd.concat(dfs)
+
+    chart_container = st.beta_container()
+
+    min_date = min(df["time"]).to_pydatetime()
+    max_date = max(df["time"]).to_pydatetime()
+    selected_min, selected_max = st.slider("Select Date Range", min_date, max_date, (min_date, max_date))
+
+    filtered_df = df[(df["time"] >= selected_min) & (df["time"] <= selected_max)]
+
     asset_names = [asset_name for asset_name, _, _ in assets_info]
 
     # the selection brush oriented on the x-axis
-    # important not here had to comment out the interactive function chart
+    # important not here had to comment out the interactive function below
     # to convert the graph to static
     brush = alt.selection_interval(encodings=['x'])
-    chart = alt.Chart(df).mark_line().encode(
+    chart = alt.Chart(filtered_df).mark_line().encode(
         x=alt.X("time", type="temporal", title="Time"),
         y=alt.Y(metric_id, type="quantitative", title=metric_name, scale=alt.Scale(type=scale)),
         tooltip=[alt.Tooltip("time", type="temporal", title="Time"),
                  alt.Tooltip(metric_id, type="quantitative", title=metric_name)],
         color="Name"
     ).properties(
-        width=900, height=1000,
+        width=700, height=700,
         title=", ".join(asset_names)
-    )  # .interactive()
+    )  #.add_selection(select_year).transform_filter(select_year) # .interactive(bind_y = False)
 
-    st.write(chart.add_selection(brush))
+    chart_container.write(chart.add_selection(brush))
 
     # st.pyplot()
 
