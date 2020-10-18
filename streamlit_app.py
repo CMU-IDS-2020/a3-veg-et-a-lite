@@ -8,8 +8,8 @@ import coin_metrics
 # Get data from coin metrics API
 
 @st.cache
-def get_data(asset_id, asset_name, metric):
-    rates = coin_metrics.get_reference_rates_pandas(asset, metric=metric)
+def get_data(asset_id, metric, asset_name):
+    rates = coin_metrics.get_reference_rates_pandas(asset_id, metric=metric)
     df = pd.DataFrame(data=rates)
     df["time"] = pd.to_datetime(df["time"])
     df['year'] = df['time'].dt.year
@@ -117,7 +117,7 @@ def display_metrics_dropdown(asset_metrics):
     return metric_name, metric_id
 
 
-def get_scale():
+def display_scale_checkbox():
     return "symlog" if st.sidebar.checkbox("Convert chart to symlog scale") else "linear"
 
 
@@ -174,7 +174,7 @@ if __name__ == "__main__":
     if selected_assets_info:
         selected_metric_name, selected_metric_id = display_metrics_dropdown(
             [set(selected_asset_metric) for _, _, selected_asset_metric in selected_assets_info])
-        selected_scale = get_scale()
+        selected_scale = display_scale_checkbox()
         display_main_chart(selected_assets_info, selected_metric_id, selected_metric_name, selected_scale)
         display_exchange_info([(asset_name, asset_id) for asset_name, asset_id, _ in selected_assets_info])
     else:
