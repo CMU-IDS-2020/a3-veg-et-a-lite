@@ -11,20 +11,33 @@ Let's go super saiyan on Crypto currency. Our graphs allow you to interactively 
 
 TODO: **A clear description of the goals of your project.** Describe the question that you are enabling a user to answer. The question should be compelling and the solution should be focused on helping users achieve their goals. 
 
+Objective
+Provide a visualization tool that enables end users interested in trading cryptocurrency to make informed unbiased decisions. Our team aims to provide an easy to navigate application that visually illustrates critical data points necessary for customers to formulate their own forecasting analysis.
+
+Introduction
+
+Background
+Cryptocurrency - The popularity of cryptocurrency has increased since its introduction in 2009. The rapid growth of cryptocurrency is attributed to the foundational characteristics that surround decentralized currency. The same features that have attracted many investors have also contributed to the high degree of volatility index. The associated risk and overwhelming introduction of other cryptocurrencies has forced novice investors to be reluctant in investing. 
+
+---Quick description in rapid growth of customer use of brokerage apps like robinhood since the pandemic----
+Brokerage apps - 
+
+---Quick overview of cryptocurrency performance overtime and since the pandemic 
+Performance - 
+
+Project Group Goals
+---The need to provide quick, rational, dynamic interactive illustrations to aid in the decision making process for investing in cryptocurrency. And the questions the group hopes to answer with the illustrations. AKA get rich quick scheme. 
+
 ## Design
 Some of these design decisions are covered in the development section but we wanted to highlight some important ones here
+
+Critical data points that drive successful investment decisions that our illustration captures
 
 ### Realtime Data
 Our customers expect the very best from us; our product wouldn't be very useful to them if we didn't show them the most up to date metrics available. It was for this reason that we chose to not use static csv files as our data source, but instead integrate with a web API to be able to continuously pull and display the most up date, realtime metrics available. 
 
-### Main Chart
-TODO
-
-### Date Slider
-It's important that users of our charts can drill down into specific time frames. Perhaps they want to see how COVID affects certain metrics, or maybe how an the presidential debates affects Bitcoin price. They wouldn't be able to answer these questions easily by looking at the entire lifetime of an asset. It was crucial to allow users to drill down into specific date ranges for this exact reason. This is why we added the date slider to our chart.
-
-### Scatter Matrix
-TODO
+REMOVE THIS WHEN WE'RE DONE
+TODO: **A rationale for your design decisions.** How did you choose your particular visual encodings and interaction techniques? What alternatives did you consider and how did you arrive at your ultimate choices?
 
 ## Development
 
@@ -69,14 +82,7 @@ It originally looked like this
 ### Addition of Jeffrey
 At this point we heard Jeffrey still hadn't found a group, so we added him to ours to become a group of 3.
 
-### Date slider 
-The main chart by default shows the data for the entire timeframe that the asset has existed. Jeff and Joe worked together to add a slider under the graph that let's you pick the date range. Originally we only had a slider that only let you select the target year, this was built using altiar and filtered the chart directly. Eventually though we managed to use streamlit to to be able to select a range of date down to the day granularity. The downside was that it would filter the dataframe and redraw the chart instead of filtering the chart directly. The whole process took us roughly 3 hours.
 
-### Moving Average
-Josh realized that users of the main chart needed a way to evaluate the metric at any given time. How does that value stack up against the rest? So he added a line to the chart to indicate the average value for the metric. Additionally he added a brush to the chart so that the average reflects the timeframe highlighted by the brush. The process took about 1.5 hrs.
 
-### Multi-Select and Symlog
-At this point we realized that looking at a single asset doesn't tell you much, the isnights are gained from comparing it to multiple assets. So Joe added the feature to be able to select multiple assets at once and they would all be graphed on the same chart with the same metric. One issue was that some assets were orders of magnitude greater for a certain metric. However we couldn't use log scales because some metrics were negative. For this reason we add a toggle to allow the user to switch between a symlog and linear scale depending on the assets and metrics. This was actually a decently difficult process and the performance does take a hit with a large amount of assets. The whole thing took about 5-7 hours.
-
-### Scatter Matrix
-We wanted a way to compare different metrics that we thought could be related. So we created a scatter plot matrix of the following three metrics, Price in USD, Transactions count, and Volatility Daily Returns 30d. Josh came up with the concept and idea, Jeff came up with the chosen metrics, and Joe put the chart together. The scatter matrix is connected to the date range slider. The whole process took 2 hours.
+REMOVE THIS ONCE WE'RE DONE
+TODO: **An overview of your development process.** Describe how the work was split among the team members. Include a commentary on the development process, including answers to the following questions: Roughly how much time did you spend developing your application (in people-hours)? What aspects took the most time?
