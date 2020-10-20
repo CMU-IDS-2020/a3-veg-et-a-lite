@@ -5,13 +5,17 @@ import streamlit as st
 import coin_metrics
 
 
+# Get data from coin metrics API
+
 @st.cache
-def get_data(asset, metric):
-    rates = coin_metrics.get_reference_rates_pandas(asset, metric=metric)
+def get_data(asset_id, metric, asset_name):
+    rates = coin_metrics.get_reference_rates_pandas(asset_id, metric=metric)
     df = pd.DataFrame(data=rates)
     df["time"] = pd.to_datetime(df["time"])
     df['year'] = df['time'].dt.year
     df['month'] = df['time'].dt.month
+    # Will be useful for combining dataframes for multiple assets
+    df["Name"] = asset_name
     return df
 
 
@@ -58,19 +62,46 @@ def get_metric_info_maps(metric_info):
     return id_to_info, name_to_id
 
 
-def title_and_info():
+@st.cache
+def get_exchange_info():
+    return coin_metrics.get_exchange_info()
+
+
+@st.cache
+def does_exchange_have_asset(exchange, asset_id):
+    for asset in exchange["marketsInfo"]:
+        if asset["assetIdBase"] == asset_id:
+            return True
+    return False
+
+
+@st.cache
+def get_exchanges_for_asset(exchanges_info, asset_id):
+    return [exchange for exchange in exchanges_info if does_exchange_have_asset(exchange, asset_id)]
+
+
+# Display charts in streamlit
+
+def display_title_and_info():
     st.title("Let's analyze some crypto data ₿📊.")
     st.write("Can you get rich on crypto?!")
 
 
-def asset_dropdown():
+def display_asset_dropdown():
     asset_map = get_asset_info_map()
-    asset_name = st.sidebar.selectbox('Choose an asset', [*asset_map.keys()])
-    asset_id, asset_metrics = asset_map[asset_name]
-    return asset_name, asset_id, asset_metrics
+    asset_options = [*asset_map.keys()]
+    asset_names = st.sidebar.multiselect('Choose some assets', asset_options, default=asset_options[0])
+    if asset_names:
+        asset_ids_and_metrics = [asset_map[asset_name] for asset_name in asset_names]
+        # Sort of a hacky way to end up with a flattened list after the zip
+        asset_ids = [asset[0] for asset in asset_ids_and_metrics]
+        asset_metrics = [asset[1] for asset in asset_ids_and_metrics]
+        return list(zip(asset_names, asset_ids, asset_metrics))
+    else:
+        return []
 
 
-def metrics_dropdown(asset_metrics):
+def display_metrics_dropdown(asset_metrics):
     metrics_info = get_metric_info()
     id_to_info_map, name_to_id_map = get_metric_info_maps(metrics_info)
     metric_choices = [id_to_info_map[metric][0] for metric in asset_metrics]
@@ -80,44 +111,117 @@ def metrics_dropdown(asset_metrics):
     metric_description = id_to_info_map[metric_id][1]
 
     with st.sidebar.beta_expander("See explanations for metric"):
+        st.markdown(f"**{metric_name}**")
         st.markdown(metric_description)
 
     return metric_name, metric_id
 
 
-def main_chart(asset_id, asset_name, metric_id, metric_name):
-    df = get_data(asset_id, metric_id)
+def display_metric_scale_checkbox():
+    return "symlog" if st.sidebar.checkbox("Convert metric chart to symlog scale") else "linear"
 
-    chart_container = st.beta_container()
 
+def display_transaction_scale_checkbox():
+    return "log" if st.sidebar.checkbox("Convert transaction count to log scale") else "linear"
+
+
+def get_aggregated_metrics(assets, metric_id):
+    dfs = [get_data(asset_id, metric_id, asset_name) for asset_name, asset_id, in assets]
+    return pd.concat(dfs)
+
+
+def display_date_slider(df):
     min_date = min(df["time"]).to_pydatetime()
     max_date = max(df["time"]).to_pydatetime()
-    selected_min, selected_max = st.slider("Select Date Range", min_date, max_date, (min_date, max_date))
+    return st.slider("Select Date Range", min_date, max_date, (min_date, max_date))
 
-    filtered_df = df[(df["time"] >= selected_min) & (df["time"] <= selected_max)]
 
+def filter_metrics_by_date(df, start_date, end_date):
+    return df[(df["time"] >= start_date) & (df["time"] <= end_date)]
+
+
+def display_main_chart(metrics_df, metric_id, metric_name, asset_names, container, scale="linear"):
     # the selection brush oriented on the x-axis
     # important not here had to comment out the interactive function below
     # to convert the graph to static
-    brush = alt.selection_interval(encodings=['x'])
-    chart = alt.Chart(filtered_df).mark_line().encode(
+    brush = alt.selection(type='interval', encodings=['x'])
+    base = alt.Chart(metrics_df).properties(width=800)
+    chart = base.mark_line().encode(
         x=alt.X("time", type="temporal", title="Time"),
-        y=alt.Y(metric_id, type="quantitative", title=metric_name),
+        y=alt.Y(metric_id, type="quantitative", title=metric_name, scale=alt.Scale(type=scale), stack=True),
+        opacity=alt.condition(brush, alt.OpacityValue(1), alt.OpacityValue(0.7)),
         tooltip=[alt.Tooltip("time", type="temporal", title="Time"),
                  alt.Tooltip(metric_id, type="quantitative", title=metric_name)],
+        color="Name"
+    ).add_selection(
+        brush
+    )
+    line = base.mark_rule().encode(
+        y=alt.Y(f"average({metric_id}):Q"),
+        size=alt.SizeValue(3),
+        color="Name"
+    ).transform_filter(
+        brush
+    )
 
-    ).properties(
-        width=700, height=700,
-        title=asset_name
-    )  #.add_selection(select_year).transform_filter(select_year) # .interactive(bind_y = False)
-
-    chart_container.write(chart.add_selection(brush))
+    container.write(chart + line)
 
     # st.pyplot()
 
 
+def display_exchange_info(assets, start_date, end_date, scale="linear"):
+    # TxCnt
+    # This is the total transactions
+    tran_count_df = get_aggregated_metrics(assets, "TxCnt")
+    tran_count_df = filter_metrics_by_date(tran_count_df, start_date, end_date)
+    tran_count_df["TxCnt"] = tran_count_df["TxCnt"].astype(float)
+    tran_count_df = tran_count_df.groupby("Name").agg({"TxCnt": "mean"}).reset_index()
+
+    exchange_info = get_exchange_info()
+    exchange_df = pd.DataFrame({"Name": [], "exchanges": [], "num_exchanges": []})
+
+    for asset_name, asset_id in assets:
+        relevant_exchanges = get_exchanges_for_asset(exchange_info, asset_id)
+        relevant_exchange_names = [exchange["id"] for exchange in relevant_exchanges]
+        exchange_df = exchange_df.append(
+            {"Name": asset_name, "exchanges": relevant_exchange_names, "num_exchanges": len(relevant_exchange_names)},
+            ignore_index=True)
+
+    merged = pd.merge(exchange_df, tran_count_df)
+
+    chart = alt.Chart(merged).mark_point().encode(
+        x=alt.X("num_exchanges", title="Number of Exchanges"),
+        y=alt.Y("TxCnt", title="Average Transaction Count", scale=alt.Scale(type=scale)),
+        tooltip=[alt.Tooltip("Name", type="nominal", title="Asset"),
+                 alt.Tooltip("TxCnt", type="quantitative", title="Average Transaction Count"),
+                 alt.Tooltip("exchanges", type="nominal", title="Available Exchanges")],
+        color="Name"
+    ).properties(
+        width=600, height=400,
+        title="How does the number of exchanges affect the transaction count?"
+    )
+    st.write(chart)
+
+
 if __name__ == "__main__":
-    title_and_info()
-    selected_asset_name, selected_asset_id, selected_asset_metrics = asset_dropdown()
-    selected_metric_name, selected_metric_id = metrics_dropdown(selected_asset_metrics)
-    main_chart(selected_asset_id, selected_asset_name, selected_metric_id, selected_metric_name)
+    display_title_and_info()
+    selected_assets_info = display_asset_dropdown()
+    if selected_assets_info:
+        common_metrics = set.intersection(
+            *[set(selected_asset_metric) for _, _, selected_asset_metric in selected_assets_info])
+        selected_metric_name, selected_metric_id = display_metrics_dropdown(common_metrics)
+        selected_scale = display_metric_scale_checkbox()
+
+        metric_df = get_aggregated_metrics([(asset_name, asset_id) for asset_name, asset_id, _ in selected_assets_info],
+                                           selected_metric_id)
+        chart_container = st.beta_container()
+        selected_start_date, selected_end_date = display_date_slider(metric_df)
+        metric_df = filter_metrics_by_date(metric_df, selected_start_date, selected_end_date)
+        display_main_chart(metric_df, selected_metric_id, selected_metric_name,
+                           [asset_name for asset_name, _, _ in selected_assets_info], chart_container, selected_scale)
+        # if "TxCnt" in common_metrics:
+        #     exchange_scale = display_transaction_scale_checkbox()
+        #     display_exchange_info([(asset_name, asset_id) for asset_name, asset_id, _ in selected_assets_info],
+        #                           selected_start_date, selected_end_date, exchange_scale)
+    else:
+        st.header("Select an asset in the sidebar")
