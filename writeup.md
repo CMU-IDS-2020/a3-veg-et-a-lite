@@ -63,6 +63,17 @@ It originally looked like this
 ### Addition of Jeffrey
 At this point we heard Jeffrey still hadn't found a group, so we added him to ours to become a group of 3.
 
+### Date slider 
+The main chart by default shows the data for the entire timeframe that the asset has existed. Jeff and Joe worked together to add a slider under the graph that let's you pick the date range. Originally we only had a slider that only let you select the target year, this was built using altiar and filtered the chart directly. Eventually though we managed to use streamlit to to be able to select a range of date down to the day granularity. The downside was that it would filter the dataframe and redraw the chart instead of filtering the chart directly. The whole process took us roughly 3 hours.
+
+### Moving Average
+TODO
+
+### Multi-Select and Symlog
+At this point we realized that looking at a single asset doesn't tell you much, the isnights are gained from comparing it to multiple assets. So Joe added the feature to be able to select multiple assets at once and they would all be graphed on the same chart with the same metric. One issue was that some assets were orders of magnitude greater for a certain metric. However we couldn't use log scales because some metrics were negative. For this reason we add a toggle to allow the user to switch between a symlog and linear scale depending on the assets and metrics. This was actually a decently difficult process and the performance does take a hit with a large amount of assets. The whole thing took about 5-7 hours.
+
+### Scatter Matrix
+TODO
 
 
 REMOVE THIS ONCE WE'RE DONE
