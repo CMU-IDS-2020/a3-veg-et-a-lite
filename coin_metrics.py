@@ -16,7 +16,8 @@ def get(url, params=None):
     if response.status_code == 200:
         return json.loads(response.text)
     else:
-        print(f"Unable to perform REST call {url} with params {params}. Status {response.status_code}. Message: {response.text}")
+        print(
+            f"Unable to perform REST call {url} with params {params}. Status {response.status_code}. Message: {response.text}")
         return None
 
 
@@ -38,8 +39,8 @@ def get_metrics():
         return []
 
 
-def get_reference_rates(asset, metric="PriceUSD", start=None, end=None):
-    params = {'metrics': [metric]}
+def get_reference_rates(asset, metrics, start=None, end=None):
+    params = {'metrics': ",".join(metrics)}
     if start:
         params['start'] = start
     if end:
@@ -47,8 +48,8 @@ def get_reference_rates(asset, metric="PriceUSD", start=None, end=None):
     return get(f"{ASSETS_ENDPOINT}/{asset}/metricdata", params=params)
 
 
-def get_reference_rates_pandas(asset, metric="PriceUSD", start=None, end=None):
-    reference_rates = get_reference_rates(asset, metric, start, end)
+def get_reference_rates_pandas(asset, metrics, start=None, end=None):
+    reference_rates = get_reference_rates(asset, metrics, start, end)
     res = {}
     if reference_rates:
         # convert to pandas friendly format, which is {"col1": [<col1-vals>], "col2": [<col2-vals>], ...}
@@ -94,8 +95,7 @@ def get_exchange_info():
 if __name__ == "__main__":
     # print(get_assets())
     # print(get_metrics())
-    # print(get_reference_rates_pandas(get_assets()[0]))
+    # print(get_reference_rates_pandas(get_assets()[5], ["PriceUSD", "BlkCnt", "TxTfrValAdjUSD"]))
     # print(get_asset_info()[0])
-    for metric in get_metric_info():
-        print(metric)
     # print(get_exchange_info())
+    print(get_metric_info())
