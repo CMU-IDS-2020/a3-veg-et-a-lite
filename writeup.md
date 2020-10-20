@@ -9,24 +9,18 @@ Let's go super saiyan on Crypto currency. Our graphs allow you to interactively 
 
 ## Project Goals
 
-TODO: **A clear description of the goals of your project.** Describe the question that you are enabling a user to answer. The question should be compelling and the solution should be focused on helping users achieve their goals. 
-
-Objective
-Provide a visualization tool that enables end users interested in trading cryptocurrency to make informed unbiased decisions. Our team aims to provide an easy to navigate application that visually illustrates critical data points necessary for customers to formulate their own forecasting analysis.
-
-Introduction
+Mission Statement
+Provide a visualization tool that enables end users interested in trading cryptocurrency to make informed unbiased decisions. Our team aims to provide an easy to navigate application that displays critical data points necessary for customers to formulate their own forecasting analysis.
 
 Background
-Cryptocurrency - The popularity of cryptocurrency has increased since its introduction in 2009. The rapid growth of cryptocurrency is attributed to the foundational characteristics that surround decentralized currency. The same features that have attracted many investors have also contributed to the high degree of volatility index. The associated risk and overwhelming introduction of other cryptocurrencies has forced novice investors to be reluctant in investing. 
+Cryptocurrency - The popularity of cryptocurrency has increased since its introduction in 2009. The rapid growth of cryptocurrency is attributed to the foundational characteristics that surround decentralized currency. The same features that have lured many investors have also contributed to the high degree of volatility index. The associated risk and overwhelming introduction of other cryptocurrencies have forced novice investors to be reluctant in investing. 
 
----Quick description in rapid growth of customer use of brokerage apps like robinhood since the pandemic----
-Brokerage apps - 
+Cryptocurrency Performance – The cryptocurrency market seems to be unaffected by the current trying times. Initial analysis suggests that there is a typical drop in price in the fall with a steady climb peaking late spring early summer time period. This is a very generalized summary of the findings while utilizing the interactive chart that is provided to users on a public trading platform. 
 
----Quick overview of cryptocurrency performance overtime and since the pandemic 
-Performance - 
+Brokerage applications – In recent months the popularity of mobile trading platforms have soared. Apps like Robinhood provide users with varying experience, the ability to participate in daily exchanges. Typical stock trading applications provide the users with an interface consisting of one chart with little interactive tools,  running estimate on statistics with no explanation, and inundate the user with headlines and third party analysis that provide suggestive advice. 
 
-Project Group Goals
----The need to provide quick, rational, dynamic interactive illustrations to aid in the decision making process for investing in cryptocurrency. And the questions the group hopes to answer with the illustrations. AKA get rich quick scheme. 
+Objective 
+The primary objective of the team was to build an application that illustrated comprehensive data of asset(s) in question and key metrics over time. Additionally, providing the user with features that display corresponding data values pertaining to previous ROI. The purpose of the app is to provide the user with quick, dynamic interactive illustrations of past performance in order to enable the user the ability to forecast future performance and assist in the investment decision making process. 
 
 ## Design
 Some of these design decisions are covered in the development section but we wanted to highlight some important ones here
