@@ -62,9 +62,9 @@ def get_metric_info_maps(metric_info):
     return id_to_info, name_to_id
 
 
-@st.cache
-def get_exchange_info():
-    return coin_metrics.get_exchange_info()
+# @st.cache
+# def get_exchange_info():
+#     return coin_metrics.get_exchange_info()
 
 
 @st.cache
