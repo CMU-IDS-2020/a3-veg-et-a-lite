@@ -30,8 +30,13 @@ Critical data points that drive successful investment decisions that our illustr
 ### Realtime Data
 Our customers expect the very best from us; our product wouldn't be very useful to them if we didn't show them the most up to date metrics available. It was for this reason that we chose to not use static csv files as our data source, but instead integrate with a web API to be able to continuously pull and display the most up date, realtime metrics available. 
 
-REMOVE THIS WHEN WE'RE DONE
-TODO: **A rationale for your design decisions.** How did you choose your particular visual encodings and interaction techniques? What alternatives did you consider and how did you arrive at your ultimate choices?
+### Main Chart
+TODO
+
+### Date Slider
+It's important that users of our charts can drill down into specific time frames. Perhaps they want to see how COVID affects certain metrics, or maybe how an the presidential debates affects Bitcoin price. They wouldn't be able to answer these questions easily by looking at the entire lifetime of an asset. It was crucial to allow users to drill down into specific date ranges for this exact reason. This is why we added the date slider to our chart.
+
+### Scatter Matrix
 
 ## Development
 
@@ -76,7 +81,14 @@ It originally looked like this
 ### Addition of Jeffrey
 At this point we heard Jeffrey still hadn't found a group, so we added him to ours to become a group of 3.
 
+### Date slider 
+The main chart by default shows the data for the entire timeframe that the asset has existed. Jeff and Joe worked together to add a slider under the graph that let's you pick the date range. Originally we only had a slider that only let you select the target year, this was built using altiar and filtered the chart directly. Eventually though we managed to use streamlit to to be able to select a range of date down to the day granularity. The downside was that it would filter the dataframe and redraw the chart instead of filtering the chart directly. The whole process took us roughly 3 hours.
 
+### Moving Average
+Josh realized that users of the main chart needed a way to evaluate the metric at any given time. How does that value stack up against the rest? So he added a line to the chart to indicate the average value for the metric. Additionally he added a brush to the chart so that the average reflects the timeframe highlighted by the brush. The process took about 1.5 hrs.
 
-REMOVE THIS ONCE WE'RE DONE
-TODO: **An overview of your development process.** Describe how the work was split among the team members. Include a commentary on the development process, including answers to the following questions: Roughly how much time did you spend developing your application (in people-hours)? What aspects took the most time?
+### Multi-Select and Symlog
+At this point we realized that looking at a single asset doesn't tell you much, the isnights are gained from comparing it to multiple assets. So Joe added the feature to be able to select multiple assets at once and they would all be graphed on the same chart with the same metric. One issue was that some assets were orders of magnitude greater for a certain metric. However we couldn't use log scales because some metrics were negative. For this reason we add a toggle to allow the user to switch between a symlog and linear scale depending on the assets and metrics. This was actually a decently difficult process and the performance does take a hit with a large amount of assets. The whole thing took about 5-7 hours.
+
+### Scatter Matrix
+We wanted a way to compare different metrics that we thought could be related. So we created a scatter plot matrix of the following three metrics, Price in USD, Transactions count, and Volatility Daily Returns 30d. Josh came up with the concept and idea, Jeff came up with the chosen metrics, and Joe put the chart together. The scatter matrix is connected to the date range slider. The whole process took 2 hours.
