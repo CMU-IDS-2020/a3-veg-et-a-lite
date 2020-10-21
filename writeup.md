@@ -115,4 +115,4 @@ At this point we realized that looking at a single asset doesn't tell you much, 
 We wanted a way to compare different metrics that we thought could be related. So we created a scatter plot matrix of the following three metrics, Price in USD, Transactions count, and Volatility Daily Returns 30d. Josh came up with the concept and idea, Jeff came up with the chosen metrics, and Joe put the chart together. The scatter matrix is connected to the date range slider. The whole process took 2 hours.
 
 ### Heat Map Chart
-
+Finally we wanted to show our users at what time periods was the ROI for an asset was the highest. We added a heatmap that had time on the x axis, asset on the y axis, and color to encode the ROI. This was developed by Josh and Joe pair programming and took roughly 3 hours.
