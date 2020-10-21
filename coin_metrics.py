@@ -94,8 +94,8 @@ def get_exchange_info():
 # This is just a demo of the API, we should really never run this file
 if __name__ == "__main__":
     # print(get_assets())
-    # print(get_metrics())
+    print(get_metrics())
     # print(get_reference_rates_pandas(get_assets()[5], ["PriceUSD", "BlkCnt", "TxTfrValAdjUSD"]))
     # print(get_asset_info()[0])
     # print(get_exchange_info())
-    print(get_metric_info())
+    # print(get_metric_info())

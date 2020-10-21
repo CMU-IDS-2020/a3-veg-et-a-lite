@@ -234,6 +234,27 @@ def display_scatter_matrix(assets, start_date, end_date, available_metrics, id_i
     st.write(chart)
 
 
+def display_heat_map(assets, start_date, end_date):
+    metrics = ['ROI30d']
+
+    df = get_aggregated_metrics(assets, metrics)
+    df = filter_metrics_by_date(df, start_date, end_date)
+
+    heat = alt.Chart(
+        df,
+        title="When to BUY? / When to SELL?"
+    ).mark_rect().encode(
+        x=alt.X('monthdate(time):T', title="Time"),
+        y=alt.Y('Name:O', title="Assets"),
+        color=alt.Color('ROI30d:Q', title='ROI Index', scale=alt.Scale(scheme="inferno")),
+        tooltip=[
+            alt.Tooltip('monthdate(time):T', title='Date'),
+            alt.Tooltip('ROI30d:Q', title='ROI')
+        ]
+    ).properties(height=500, width=1000)
+    st.write(heat)
+
+
 if __name__ == "__main__":
     display_title_and_info()
     selected_assets_info = display_asset_dropdown()
@@ -257,10 +278,7 @@ if __name__ == "__main__":
                            [asset_name for asset_name, _, _ in selected_assets_info], chart_container, selected_scale)
         display_scatter_matrix([(asset_name, asset_id) for asset_name, asset_id, _ in selected_assets_info],
                                selected_start_date, selected_end_date, common_metrics, id_to_info_map)
-
-        # if "TxCnt" in common_metrics:
-        #     exchange_scale = display_transaction_scale_checkbox()
-        #     display_exchange_info([(asset_name, asset_id) for asset_name, asset_id, _ in selected_assets_info],
-        #                           selected_start_date, selected_end_date, exchange_scale)
+        display_heat_map([(asset_name, asset_id) for asset_name, asset_id, _ in selected_assets_info],
+                         selected_start_date, selected_end_date)
     else:
         st.header("Select an asset in the sidebar")
