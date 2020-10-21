@@ -31,12 +31,14 @@ Critical data points that drive successful investment decisions that our illustr
 Our customers expect the very best from us; our product wouldn't be very useful to them if we didn't show them the most up to date metrics available. It was for this reason that we chose to not use static csv files as our data source, but instead integrate with a web API to be able to continuously pull and display the most up date, realtime metrics available. 
 
 ### Main Chart
-TODO
+We chose a classic line chart with time on the x axis and a metric on the y axis. This is how most stock and asset related charts are constructed. We wanted our main chart to be famiiliar and easy to understand and we felt that this was the best way to do that. In terms of the scale of the y-axis we ran into a bit of an issue. Some assets have very similar scaled metrics and are easy to compare while some have orders of magnitude of difference. Additionally some metrics can be negative. For this reason we added a symlog scale toggle button to allow the user to toggle between symlog and linear scale. Symlog allows metrics with hugely different values to be compared easily while still working on negative numbers. When the metrics are similar the user can just use a standard linear scale.
+Aditionally we added an average line for each asset so the user can see how any given data points compares to the average. We allow the user to narrow the time frame of the average without having to change the time frame of the entire graph. This was so user can compare the average of a specific time period to any data points.
 
 ### Date Slider
 It's important that users of our charts can drill down into specific time frames. Perhaps they want to see how COVID affects certain metrics, or maybe how an the presidential debates affects Bitcoin price. They wouldn't be able to answer these questions easily by looking at the entire lifetime of an asset. It was crucial to allow users to drill down into specific date ranges for this exact reason. This is why we added the date slider to our chart.
 
 ### Scatter Matrix
+TODO
 
 ## Development
 
