@@ -1,7 +1,8 @@
 # Veg-et-a Lite
 
-TODO CHANGE ME
-![A screenshot of your application. Could be a GIF.](screenshot.png)
+![](https://github.com/CMU-IDS-2020/a3-veg-et-a-lite/blob/master/main_chart_condensed%202.0.png)
+![](https://github.com/CMU-IDS-2020/a3-veg-et-a-lite/blob/master/scatter_plots%20screenshot.png)
+![](https://github.com/CMU-IDS-2020/a3-veg-et-a-lite/blob/master/heat_map%20screenshot.png)
 
 Let's go super saiyan on Crypto currency. Our graphs allow you to interactively analyze the most up to date information on the most popular cryptocurrencies on the market.
 
@@ -78,7 +79,7 @@ For the main chart we wanted to allow people to see any metric for any crypto as
 3. The user would then see that metric plotted 
 Since some of the metrics are not immediately obvious, Joe added a little blurb to explain to currently selected metric. This took roughly 45 minutes. 
 It originally looked like this
-![](images/original_main_chart.png)
+![](https://github.com/CMU-IDS-2020/a3-veg-et-a-lite/blob/master/main_chart_condensed%202.0.png)
 
 ### Addition of Jeffrey
 At this point we heard Jeffrey still hadn't found a group, so we added him to ours to become a group of 3.
