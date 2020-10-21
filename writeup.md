@@ -56,8 +56,9 @@ It's important that users of our charts can drill down into specific time frames
 For this particular dataset, the purpose of a scatter matrix is to help one understand the general shape (and density, for those who can recognize it through overlap of color) of the data relations between variables. Hence, one would gain better intuition by choosing 3 features that potentially have (interesting) real-world implications when related to one another. Hence, these 3 features need to be quite different in measuring units. With cryptocurrency being related to economics, price (in USD; it is more relatable to clients) is the first feature chosen. The next feature chosen is the number of transactions. The reason for including this feature is that it highlights the value of the bitcoin in the currency network. The last feature included is the metric for volatility daily returns. Transactions and pricing play a factor in economic stability, so it is a feature to include in the matrix.
 
 ### Heat Map Metric
+Understanding that our targeted market are novice investors, we mapped out the decision making process a typical person cycles through prior to purchase to gain a better understanding on their needs. The two most important steps in the iterative process we found were when to purchase and when to sell. The other steps in the process were almost negligible in measuring if a person was content with their decision. 
 
-Josh- add a segment HERE!
+With this design aspect and our main objective of providing fast feedback. We cycled through charts to determine the best minimalist illustration that we could provide to the end user. The chart had to capture performance of an asset for a specified time range that displayed data values of potential ROI without overwhelming the user with data or explanations. The team settled on a heatmap that captures the metrics for 30 day ROI for the selected assets. The reasoning behind this particular metric was the average time a new investors holds on to an asset and the need to assists with uniformed decisions.  
 
 ## Development
 
