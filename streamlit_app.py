@@ -238,6 +238,7 @@ def display_heat_map(assets, start_date, end_date):
     metrics = ['ROI30d']
 
     df = get_aggregated_metrics(assets, metrics)
+    st.write(df)
     df = filter_metrics_by_date(df, start_date, end_date)
 
     heat = alt.Chart(
@@ -246,10 +247,10 @@ def display_heat_map(assets, start_date, end_date):
     ).mark_rect().encode(
         x=alt.X('monthdate(time):T', title="Time"),
         y=alt.Y('Name:O', title="Assets"),
-        color=alt.Color('ROI30d:Q', title='ROI Index', scale=alt.Scale(scheme="inferno")),
+        color=alt.Color('ROI30d:Q', title='ROI Index', scale=alt.Scale(scheme="inferno"), aggregate="mean"),
         tooltip=[
             alt.Tooltip('monthdate(time):T', title='Date'),
-            alt.Tooltip('ROI30d:Q', title='ROI')
+            alt.Tooltip('ROI30d:Q', title='ROI', aggregate="mean")
         ]
     ).properties(height=500, width=1000)
     st.write(heat)
