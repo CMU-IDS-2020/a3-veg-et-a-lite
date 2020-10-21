@@ -26,7 +26,7 @@ The primary objective of the team was to build an application that illustrated c
 ## Design
 During the brainstorming process, the team’s primary focus was to include the minimal amount of key interactive features that enables users to select and filter through their specified data whilst avoiding noisy illustrations. At the conclusion of the first meetings the team formulated the following key design aspects: 
 
-1. Have one main chart that illustrates the following data fields and values.
+1. One main chart that illustrates the data fields and values for user selected cryptocurrency asset(s).
 
    a. Asset names selected by the user via a drop down menu. 
    
