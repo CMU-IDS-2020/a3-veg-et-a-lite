@@ -27,11 +27,12 @@ The primary objective of the team was to build an application that illustrated c
 During the brainstorming process, the team’s primary focus was to include the minimal amount of key interactive features that enables users to select and filter through their specified data whilst avoiding noisy illustrations. At the conclusion of the first initial meetings the condensed the following key design aspects: 
 
 1. Have one main chart that illustrates the following data fields and values.
-  a. Asset names selected by the user via a drop down menu. 
-  b. One specific data metric selected by the user via a drop down menu. 
-  b. An explanation/definition of the selected data metric to ease the summarization of the data values. 
-  d. Provide an option to change the illustration to a symlog scale.
-  e. Allow users to filter data for specified time frames and program the time dependency for the complimentary graphs. 
+
+   a. Asset names selected by the user via a drop down menu. 
+   b. One specific data metric selected by the user via a drop down menu. 
+   c. An explanation/definition of the selected data metric to ease the summarization of the data values. 
+   d. Provide an option to change the illustration to a symlog scale.
+   e. Allow users to filter data for specified time frames and program the time dependency for the complimentary graphs. 
 
 2. Display complimentary graphs for the asset(s) selected that have a direct correlation to data values that directly influence opportunity costs and potential profit margins.
 
