@@ -1,7 +1,8 @@
 # Veg-et-a Lite
 
-TODO CHANGE ME
-![A screenshot of your application. Could be a GIF.](screenshot.png)
+![](https://github.com/CMU-IDS-2020/a3-veg-et-a-lite/blob/master/main_chart_condensed%202.0.png)
+![](https://github.com/CMU-IDS-2020/a3-veg-et-a-lite/blob/master/scatter_plots%20screenshot.png)
+![](https://github.com/CMU-IDS-2020/a3-veg-et-a-lite/blob/master/heat_map%20screenshot.png)
 
 Let's go super saiyan on Crypto currency. Our graphs allow you to interactively analyze the most up to date information on the most popular cryptocurrencies on the market.
 
