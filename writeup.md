@@ -29,9 +29,13 @@ During the brainstorming process, the team’s primary focus was to include the 
 1. Have one main chart that illustrates the following data fields and values.
 
    a. Asset names selected by the user via a drop down menu. 
+   
    b. One specific data metric selected by the user via a drop down menu. 
+   
    c. An explanation/definition of the selected data metric to ease the summarization of the data values. 
+   
    d. Provide an option to change the illustration to a symlog scale.
+   
    e. Allow users to filter data for specified time frames and program the time dependency for the complimentary graphs. 
 
 2. Display complimentary graphs for the asset(s) selected that have a direct correlation to data values that directly influence opportunity costs and potential profit margins.
