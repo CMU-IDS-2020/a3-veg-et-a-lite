@@ -24,9 +24,18 @@ Brokerage applications – In recent months the popularity of mobile trading pla
 The primary objective of the team was to build an application that illustrated comprehensive data of asset(s) in question and key metrics over time. Additionally, providing the user with features that display corresponding data values pertaining to previous ROI. The purpose of the app is to provide the user with quick, dynamic interactive illustrations of past performance in order to enable the user the ability to forecast future performance and assist in the investment decision making process. 
 
 ## Design
-Some of these design decisions are covered in the development section but we wanted to highlight some important ones here
+During the brainstorming process, the team’s primary focus was to include the minimal amount of key interactive features that enables users to select and filter through their specified data whilst avoiding noisy illustrations. At the conclusion of the first initial meetings the condensed the following key design aspects: 
 
-Critical data points that drive successful investment decisions that our illustration captures
+1. Have one main chart that illustrates the following data fields and values.
+  a. Asset names selected by the user via a drop down menu. 
+  b. One specific data metric selected by the user via a drop down menu. 
+  b. An explanation/definition of the selected data metric to ease the summarization of the data values. 
+  d. Provide an option to change the illustration to a symlog scale.
+  e. Allow users to filter data for specified time frames and program the time dependency for the complimentary graphs. 
+
+2. Display complimentary graphs for the asset(s) selected that have a direct correlation to data values that directly influence opportunity costs and potential profit margins.
+
+3. Display a graph that only illustrates stock prices for selected asset(s) for particular times denoted by the time selector tool.
 
 ### Realtime Data
 Our customers expect the very best from us; our product wouldn't be very useful to them if we didn't show them the most up to date metrics available. It was for this reason that we chose to not use static csv files as our data source, but instead integrate with a web API to be able to continuously pull and display the most up date, realtime metrics available. 
