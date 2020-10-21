@@ -55,6 +55,10 @@ It's important that users of our charts can drill down into specific time frames
 ### Scatter Matrix
 For this particular dataset, the purpose of a scatter matrix is to help one understand the general shape (and density, for those who can recognize it through overlap of color) of the data relations between variables. Hence, one would gain better intuition by choosing 3 features that potentially have (interesting) real-world implications when related to one another. Hence, these 3 features need to be quite different in measuring units. With cryptocurrency being related to economics, price (in USD; it is more relatable to clients) is the first feature chosen. The next feature chosen is the number of transactions. The reason for including this feature is that it highlights the value of the bitcoin in the currency network. The last feature included is the metric for volatility daily returns. Transactions and pricing play a factor in economic stability, so it is a feature to include in the matrix.
 
+### Heat Map
+
+Josh- add a segment HERE!
+
 ## Development
 
 ### Getting the Data
