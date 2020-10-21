@@ -9,17 +9,17 @@ Let's go super saiyan on Crypto currency. Our graphs allow you to interactively 
 
 ## Project Goals
 
-Mission Statement
+### Mission Statement
 Provide a visualization tool that enables end users interested in trading cryptocurrency to make informed unbiased decisions. Our team aims to provide an easy to navigate application that displays critical data points necessary for customers to formulate their own forecasting analysis.
 
-Background
+### Background
 Cryptocurrency - The popularity of cryptocurrency has increased since its introduction in 2009. The rapid growth of cryptocurrency is attributed to the foundational characteristics that surround decentralized currency. The same features that have lured many investors have also contributed to the high degree of volatility index. The associated risk and overwhelming introduction of other cryptocurrencies have forced novice investors to be reluctant in investing. 
 
 Cryptocurrency Performance – The cryptocurrency market seems to be unaffected by the current trying times. Initial analysis suggests that there is a typical drop in price in the fall with a steady climb peaking late spring early summer time period. This is a very generalized summary of the findings while utilizing the interactive chart that is provided to users on a public trading platform. 
 
 Brokerage applications – In recent months the popularity of mobile trading platforms have soared. Apps like Robinhood provide users with varying experience, the ability to participate in daily exchanges. Typical stock trading applications provide the users with an interface consisting of one chart with little interactive tools,  running estimate on statistics with no explanation, and inundate the user with headlines and third party analysis that provide suggestive advice. 
 
-Objective 
+### Objective 
 The primary objective of the team was to build an application that illustrated comprehensive data of asset(s) in question and key metrics over time. Additionally, providing the user with features that display corresponding data values pertaining to previous ROI. The purpose of the app is to provide the user with quick, dynamic interactive illustrations of past performance in order to enable the user the ability to forecast future performance and assist in the investment decision making process. 
 
 ## Design
