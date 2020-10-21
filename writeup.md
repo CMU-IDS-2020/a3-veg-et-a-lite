@@ -45,17 +45,17 @@ During the brainstorming process, the team’s primary focus was to include the 
 ### Realtime Data
 Our customers expect the very best from us; our product wouldn't be very useful to them if we didn't show them the most up to date metrics available. It was for this reason that we chose to not use static csv files as our data source, but instead integrate with a web API to be able to continuously pull and display the most up date, realtime metrics available. 
 
-### Main Chart
+### Main Chart Metric
 We chose a classic line chart with time on the x axis and a metric on the y axis. This is how most stock and asset related charts are constructed. We wanted our main chart to be famiiliar and easy to understand and we felt that this was the best way to do that. In terms of the scale of the y-axis we ran into a bit of an issue. Some assets have very similar scaled metrics and are easy to compare while some have orders of magnitude of difference. Additionally some metrics can be negative. For this reason we added a symlog scale toggle button to allow the user to toggle between symlog and linear scale. Symlog allows metrics with hugely different values to be compared easily while still working on negative numbers. When the metrics are similar the user can just use a standard linear scale.
 Aditionally we added an average line for each asset so the user can see how any given data points compares to the average. We allow the user to narrow the time frame of the average without having to change the time frame of the entire graph. This was so user can compare the average of a specific time period to any data points.
 
-### Date Slider
+### Date Slider Feature
 It's important that users of our charts can drill down into specific time frames. Perhaps they want to see how COVID affects certain metrics, or maybe how an the presidential debates affects Bitcoin price. They wouldn't be able to answer these questions easily by looking at the entire lifetime of an asset. It was crucial to allow users to drill down into specific date ranges for this exact reason. This is why we added the date slider to our chart.
 
-### Scatter Matrix
+### Scatter Matrix Metrics
 For this particular dataset, the purpose of a scatter matrix is to help one understand the general shape (and density, for those who can recognize it through overlap of color) of the data relations between variables. Hence, one would gain better intuition by choosing 3 features that potentially have (interesting) real-world implications when related to one another. Hence, these 3 features need to be quite different in measuring units. With cryptocurrency being related to economics, price (in USD; it is more relatable to clients) is the first feature chosen. The next feature chosen is the number of transactions. The reason for including this feature is that it highlights the value of the bitcoin in the currency network. The last feature included is the metric for volatility daily returns. Transactions and pricing play a factor in economic stability, so it is a feature to include in the matrix.
 
-### Heat Map
+### Heat Map Metric
 
 Josh- add a segment HERE!
 
@@ -113,3 +113,6 @@ At this point we realized that looking at a single asset doesn't tell you much, 
 
 ### Scatter Matrix
 We wanted a way to compare different metrics that we thought could be related. So we created a scatter plot matrix of the following three metrics, Price in USD, Transactions count, and Volatility Daily Returns 30d. Josh came up with the concept and idea, Jeff came up with the chosen metrics, and Joe put the chart together. The scatter matrix is connected to the date range slider. The whole process took 2 hours.
+
+### Heat Map Chart
+
