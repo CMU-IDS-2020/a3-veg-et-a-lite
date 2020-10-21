@@ -24,7 +24,7 @@ Brokerage applications – In recent months the popularity of mobile trading pla
 The primary objective of the team was to build an application that illustrated comprehensive data of asset(s) in question and key metrics over time. Additionally, providing the user with features that display corresponding data values pertaining to previous ROI. The purpose of the app is to provide the user with quick, dynamic interactive illustrations of past performance in order to enable the user the ability to forecast future performance and assist in the investment decision making process. 
 
 ## Design
-During the brainstorming process, the team’s primary focus was to include the minimal amount of key interactive features that enables users to select and filter through their specified data whilst avoiding noisy illustrations. At the conclusion of the first initial meetings the condensed the following key design aspects: 
+During the brainstorming process, the team’s primary focus was to include the minimal amount of key interactive features that enables users to select and filter through their specified data whilst avoiding noisy illustrations. At the conclusion of the first meetings the team formulated the following key design aspects: 
 
 1. Have one main chart that illustrates the following data fields and values.
 
