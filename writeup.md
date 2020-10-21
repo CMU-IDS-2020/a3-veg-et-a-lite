@@ -1,7 +1,8 @@
 # Veg-et-a Lite
 
-TODO CHANGE ME
-![A screenshot of your application. Could be a GIF.](screenshot.png)
+![](https://github.com/CMU-IDS-2020/a3-veg-et-a-lite/blob/master/main_chart_condensed%202.0.png)
+![](https://github.com/CMU-IDS-2020/a3-veg-et-a-lite/blob/master/scatter_plots%20screenshot.png)
+![](https://github.com/CMU-IDS-2020/a3-veg-et-a-lite/blob/master/heat_map%20screenshot.png)
 
 Let's go super saiyan on Crypto currency. Our graphs allow you to interactively analyze the most up to date information on the most popular cryptocurrencies on the market.
 
@@ -23,22 +24,40 @@ Brokerage applications – In recent months the popularity of mobile trading pla
 The primary objective of the team was to build an application that illustrated comprehensive data of asset(s) in question and key metrics over time. Additionally, providing the user with features that display corresponding data values pertaining to previous ROI. The purpose of the app is to provide the user with quick, dynamic interactive illustrations of past performance in order to enable the user the ability to forecast future performance and assist in the investment decision making process. 
 
 ## Design
-Some of these design decisions are covered in the development section but we wanted to highlight some important ones here
+During the brainstorming process, the team’s primary focus was to include the minimal amount of key interactive features that enables users to select and filter through their specified data whilst avoiding noisy illustrations. At the conclusion of the first initial meetings the condensed the following key design aspects: 
 
-Critical data points that drive successful investment decisions that our illustration captures
+1. Have one main chart that illustrates the following data fields and values.
+
+   a. Asset names selected by the user via a drop down menu. 
+   
+   b. One specific data metric selected by the user via a drop down menu. 
+   
+   c. An explanation/definition of the selected data metric to ease the summarization of the data values. 
+   
+   d. Provide an option to change the illustration to a symlog scale.
+   
+   e. Allow users to filter data for specified time frames and program the time dependency for the complimentary graphs. 
+
+2. Display complimentary graphs for the asset(s) selected that have a direct correlation to data values that directly influence opportunity costs and potential profit margins.
+
+3. Display a graph that only illustrates stock prices for selected asset(s) for particular times denoted by the time selector tool.
 
 ### Realtime Data
 Our customers expect the very best from us; our product wouldn't be very useful to them if we didn't show them the most up to date metrics available. It was for this reason that we chose to not use static csv files as our data source, but instead integrate with a web API to be able to continuously pull and display the most up date, realtime metrics available. 
 
-### Main Chart
+### Main Chart Metric
 We chose a classic line chart with time on the x axis and a metric on the y axis. This is how most stock and asset related charts are constructed. We wanted our main chart to be famiiliar and easy to understand and we felt that this was the best way to do that. In terms of the scale of the y-axis we ran into a bit of an issue. Some assets have very similar scaled metrics and are easy to compare while some have orders of magnitude of difference. Additionally some metrics can be negative. For this reason we added a symlog scale toggle button to allow the user to toggle between symlog and linear scale. Symlog allows metrics with hugely different values to be compared easily while still working on negative numbers. When the metrics are similar the user can just use a standard linear scale.
 Aditionally we added an average line for each asset so the user can see how any given data points compares to the average. We allow the user to narrow the time frame of the average without having to change the time frame of the entire graph. This was so user can compare the average of a specific time period to any data points.
 
-### Date Slider
+### Date Slider Feature
 It's important that users of our charts can drill down into specific time frames. Perhaps they want to see how COVID affects certain metrics, or maybe how an the presidential debates affects Bitcoin price. They wouldn't be able to answer these questions easily by looking at the entire lifetime of an asset. It was crucial to allow users to drill down into specific date ranges for this exact reason. This is why we added the date slider to our chart.
 
-### Scatter Matrix
+### Scatter Matrix Metrics
 For this particular dataset, the purpose of a scatter matrix is to help one understand the general shape (and density, for those who can recognize it through overlap of color) of the data relations between variables. Hence, one would gain better intuition by choosing 3 features that potentially have (interesting) real-world implications when related to one another. Hence, these 3 features need to be quite different in measuring units. With cryptocurrency being related to economics, price (in USD; it is more relatable to clients) is the first feature chosen. The next feature chosen is the number of transactions. The reason for including this feature is that it highlights the value of the bitcoin in the currency network. The last feature included is the metric for volatility daily returns. Transactions and pricing play a factor in economic stability, so it is a feature to include in the matrix.
+
+### Heat Map Metric
+
+Josh- add a segment HERE!
 
 ## Development
 
@@ -78,7 +97,7 @@ For the main chart we wanted to allow people to see any metric for any crypto as
 3. The user would then see that metric plotted 
 Since some of the metrics are not immediately obvious, Joe added a little blurb to explain to currently selected metric. This took roughly 45 minutes. 
 It originally looked like this
-![](images/original_main_chart.png)
+![](https://github.com/CMU-IDS-2020/a3-veg-et-a-lite/blob/master/main_chart_condensed%202.0.png)
 
 ### Addition of Jeffrey
 At this point we heard Jeffrey still hadn't found a group, so we added him to ours to become a group of 3.
@@ -94,3 +113,6 @@ At this point we realized that looking at a single asset doesn't tell you much, 
 
 ### Scatter Matrix
 We wanted a way to compare different metrics that we thought could be related. So we created a scatter plot matrix of the following three metrics, Price in USD, Transactions count, and Volatility Daily Returns 30d. Josh came up with the concept and idea, Jeff came up with the chosen metrics, and Joe put the chart together. The scatter matrix is connected to the date range slider. The whole process took 2 hours.
+
+### Heat Map Chart
+

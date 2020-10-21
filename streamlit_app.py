@@ -238,7 +238,6 @@ def display_heat_map(assets, start_date, end_date):
     metrics = ['ROI30d']
 
     df = get_aggregated_metrics(assets, metrics)
-    st.write(df)
     df = filter_metrics_by_date(df, start_date, end_date)
 
     heat = alt.Chart(
